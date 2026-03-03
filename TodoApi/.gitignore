@@ -1,0 +1,22 @@
+# Build results
+bin/
+obj/
+
+# Logs
+logs/
+
+# Visual Studio files
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific launch settings
+Properties/launchSettings.json
+
+# Sensitive configuration
+appsettings.Development.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
