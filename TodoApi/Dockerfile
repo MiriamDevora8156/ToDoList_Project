@@ -20,6 +20,4 @@ ENV ASPNETCORE_HTTP_PORTS=10000
 EXPOSE 10000
 
 # הרצת ה-DLL של הפרויקט שלך (החליפי ב-TodoApi.dll אם שם הקובץ שונה)
-ENTRYPOINT ["dotnet", "TodoApi.dll"]git add .
-git commit -m "Add Dockerfile for Render deployment"
-git push
+ENTRYPOINT ["dotnet", "TodoApi.dll"]
