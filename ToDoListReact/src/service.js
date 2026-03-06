@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const apiUrl = "http://localhost:5030";
+const apiUrl = "https://your-api-service-name.onrender.com";
+// const apiUrl = "http://localhost:5030";
 
 // 1. הוספת הטוקן לכל בקשה באופן אוטומטי
 axios.interceptors.request.use(config => {

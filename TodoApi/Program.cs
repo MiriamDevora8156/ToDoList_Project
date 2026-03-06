@@ -35,15 +35,18 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // הגדרת JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => {
-        options.TokenValidationParameters = new TokenValidationParameters {
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = "TodoApi",
             ValidAudience = "TodoApiUsers",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourVeryLongSecretKeyHere123456!"))
+            // כאן הקוד מושך את הסוד ממשתני הסביבה שהגדרנו ב-Render
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_SECRET_KEY"] ?? "FallbackKeyForLocalDevelopment123456!"))
         };
     });
 
@@ -94,24 +97,30 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     {
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
-        
-        var response = new { 
-            error = "Internal Server Error", 
-            message = "חלה שגיאה פנימית בשרת. אנא נסה שוב מאוחר יותר." 
+
+        var response = new
+        {
+            error = "Internal Server Error",
+            message = "חלה שגיאה פנימית בשרת. אנא נסה שוב מאוחר יותר."
         };
-        
+
         await context.Response.WriteAsJsonAsync(response);
     });
 });
 
-if (app.Environment.IsDevelopment()) {
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.Use(async (context, next) => {
+app.UseCors("AllowAll"); // הפעלת המדיניות שהגדרנו למעלה
+
+app.Use(async (context, next) =>
+{
     await next();
-    if (context.Response.StatusCode == 404 && !context.Response.HasStarted) {
+    if (context.Response.StatusCode == 404 && !context.Response.HasStarted)
+    {
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsJsonAsync(new { error = "הנתיב המבוקש לא נמצא" });
     }
@@ -119,62 +128,68 @@ app.Use(async (context, next) => {
 // --- 3. Routes ---
 
 // שליפת כל המשימות
-app.MapGet("/items", async (string? search, bool? isComplete, ITodoService todoService) => 
+app.MapGet("/items", async (string? search, bool? isComplete, ITodoService todoService) =>
 {
     var items = await todoService.GetAllAsync(search, isComplete);
     return Results.Ok(items);
 }).RequireAuthorization();
 
 // שליפת סטטיסטיקות (שיניתי את הנתיב כדי שלא יתנגש)
-app.MapGet("/items/stats", async (ITodoService todoService) => {
+app.MapGet("/items/stats", async (ITodoService todoService) =>
+{
     return Results.Ok(await todoService.GetStatisticsAsync());
 }).RequireAuthorization();
 
 // שליפת משימה בודדת לפי ID
-app.MapGet("/items/{id}", async (int id, ITodoService todoService) => {
+app.MapGet("/items/{id}", async (int id, ITodoService todoService) =>
+{
     var item = await todoService.GetByIdAsync(id, 0);
     return item is not null ? Results.Ok(item) : Results.NotFound();
 }).RequireAuthorization();
 
 // הוספת משימה חדשה
-app.MapPost("/items", async (ITodoService service, TodoItemDTO item) => 
+app.MapPost("/items", async (ITodoService service, TodoItemDTO item) =>
 {
-    await service.AddAsync(item); 
+    await service.AddAsync(item);
     return Results.Created($"/items/{item.Id}", item);
 });
 
 // עדכון משימה
-app.MapPut("/items/{id}", async (int id, TodoItemDTO itemDto, ITodoService todoService) => {
+app.MapPut("/items/{id}", async (int id, TodoItemDTO itemDto, ITodoService todoService) =>
+{
     itemDto.Id = id;
     await todoService.UpdateAsync(itemDto, 0);
     return Results.NoContent();
 }).RequireAuthorization();
 
 // מחיקת משימה
-app.MapDelete("/items/{id}", async (int id, ITodoService todoService) => {
+app.MapDelete("/items/{id}", async (int id, ITodoService todoService) =>
+{
     await todoService.DeleteAsync(id, 0);
     return Results.NoContent();
 }).RequireAuthorization();
 
 // --- Auth Routes ---
-app.MapPost("/register", async (AuthService auth, UserDTO user) => {
+app.MapPost("/register", async (AuthService auth, UserDTO user) =>
+{
     await auth.RegisterAsync(user.Username, user.Password);
     return Results.Ok("User registered");
 });
 
-app.MapPost("/login", async (AuthService auth, UserDTO user) => {
+app.MapPost("/login", async (AuthService auth, UserDTO user) =>
+{
     var token = await auth.LoginAsync(user.Username, user.Password);
     return token != null ? Results.Ok(new { token }) : Results.Unauthorized();
 });
 
 app.MapGet("/categories", async (ICategoryService service) => Results.Ok(await service.GetAllAsync()));
-app.MapPost("/categories", async (string name, ICategoryService service) => {
+app.MapPost("/categories", async (string name, ICategoryService service) =>
+{
     await service.AddAsync(name);
     return Results.Created();
 });
 
-app.UseCors("AllowAll"); // הפעלת המדיניות שהגדרנו למעלה
-
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
