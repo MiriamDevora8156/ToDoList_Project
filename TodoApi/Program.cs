@@ -108,11 +108,11 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     });
 });
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseCors("AllowAll"); // הפעלת המדיניות שהגדרנו למעלה
 
@@ -188,6 +188,8 @@ app.MapPost("/categories", async (string name, ICategoryService service) =>
     await service.AddAsync(name);
     return Results.Created();
 });
+
+app.MapGet("/", ()=> "Server API id running!");
 
 app.UseAuthentication();
 app.UseAuthorization();
