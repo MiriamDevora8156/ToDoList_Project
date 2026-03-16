@@ -4,16 +4,16 @@ import Login from './Login.js'; // הקובץ המקורי שלך נשאר
 import { motion, AnimatePresence } from 'framer-motion';
 
 // MUI Imports
-import { 
-  Container, Paper, Typography, TextField, Button, Select, MenuItem, 
-  IconButton, Checkbox, Chip, Box, Grid, Card, CardContent, Divider, 
+import {
+  Container, Paper, Typography, TextField, Button, Select, MenuItem,
+  IconButton, Checkbox, Chip, Box, Grid, Card, CardContent, Divider,
   Tooltip, Avatar, Stack, FormControl, InputLabel, ThemeProvider, createTheme, CssBaseline
 } from '@mui/material';
 
 // Icons
-import { 
-  DeleteOutline, EventNote, PriorityHigh, Logout, CheckCircle, 
-  FiberManualRecord, Star, WarningAmber, AddRounded, 
+import {
+  DeleteOutline, EventNote, PriorityHigh, Logout, CheckCircle,
+  FiberManualRecord, Star, WarningAmber, AddRounded,
   CategoryRounded, CloseRounded, AssignmentTurnedInRounded,
   TrendingUp, DoneAll, ReportProblem
 } from '@mui/icons-material';
@@ -46,7 +46,7 @@ function App() {
   const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [todos, setTodos] = useState([]);
-  const [token, setToken] = useState(()=>localStorage.getItem("token"));
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [stats, setStats] = useState(null);
   const [filter, setFilter] = useState("הכל");
   const [categories, setCategories] = useState(["כללי", "עבודה", "לימודים", "בית", "קניות"]);
@@ -72,7 +72,11 @@ function App() {
     } catch (error) { console.error(error); }
   }, [token]);
 
-  useEffect(() => { loadAppData(); }, [loadAppData]);
+  useEffect(() => {
+    if (token) {
+      loadAppData();
+    }
+  }, [token, loadAppData]);
 
   // --- פונקציות פעולה מקוריות ---
   async function createTodo(e) {
@@ -102,21 +106,21 @@ function App() {
     await loadAppData();
   }
 
-  const filteredTodos = useMemo(() => 
+  const filteredTodos = useMemo(() =>
     filter === "הכל" ? todos : todos.filter(t => (t.categoryName ?? t.CategoryName) === filter)
-  , [todos, filter]);
+    , [todos, filter]);
 
   // --- מסך כניסה מעוצב (עוטף את ה-Login המקורי שלך) ---
   // 1. הגדרת ה-Theme שתשפיע על כל שדות הקלט בתוך ה-Login
-const loginTheme = createTheme({
-  palette: {
-    primary: { main: '#6366f1' },
-  },
-  typography: { fontFamily: '"Inter", sans-serif' },
-  components: {
-    // זה הסוד: אנחנו מגדירים עיצוב גלובלי לתגיות HTML רגילות בתוך ה-Theme
-    MuiCssBaseline: {
-      styleOverrides: `
+  const loginTheme = createTheme({
+    palette: {
+      primary: { main: '#6366f1' },
+    },
+    typography: { fontFamily: '"Inter", sans-serif' },
+    components: {
+      // זה הסוד: אנחנו מגדירים עיצוב גלובלי לתגיות HTML רגילות בתוך ה-Theme
+      MuiCssBaseline: {
+        styleOverrides: `
         /* עיצוב שדות קלט רגילים (input) */
         input {
           width: 100%;
@@ -156,49 +160,49 @@ const loginTheme = createTheme({
           transform: scale(0.98);
         }
       `,
+      },
     },
-  },
-});
+  });
 
-const handleLoginSuccess = (newToken) => {
-      setToken(newToken);
-};
+  const handleLoginSuccess = (newToken) => {
+    setToken(newToken);
+  };
 
-if (!token) return (
-  <ThemeProvider theme={loginTheme}>
-    <CssBaseline /> {/* חשוב מאוד כדי שה-Global Styles יפעלו */}
-    <Box sx={{ 
-      minHeight: '100vh', display: 'flex', flex: 'warp', alignItems: 'center', justifyContent: 'center',
-      background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)', p: 3 
-    }}>
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-        <Card sx={{ maxWidth: 400, width: '100%', borderRadius: 10, boxShadow: '0 30px 60px -12px rgba(0,0,0,0.15)', overflow: 'hidden' }}>
-          <Box sx={{ bgcolor: '#6366f1', p: 4, textAlign: 'center', color: 'white' }}>
-             <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', m: '0 auto 12px', width: 50, height: 50 }}>
+  if (!token) return (
+    <ThemeProvider theme={loginTheme}>
+      <CssBaseline /> {/* חשוב מאוד כדי שה-Global Styles יפעלו */}
+      <Box sx={{
+        minHeight: '100vh', display: 'flex', flex: 'warp', alignItems: 'center', justifyContent: 'center',
+        background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)', p: 3
+      }}>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+          <Card sx={{ maxWidth: 400, width: '100%', borderRadius: 10, boxShadow: '0 30px 60px -12px rgba(0,0,0,0.15)', overflow: 'hidden' }}>
+            <Box sx={{ bgcolor: '#6366f1', p: 4, textAlign: 'center', color: 'white' }}>
+              <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', m: '0 auto 12px', width: 50, height: 50 }}>
                 <AssignmentTurnedInRounded />
-             </Avatar>
-             <Typography variant="h4" fontWeight="800">Focus.</Typography>
-             <Typography variant="body2" sx={{ opacity: 0.8 }}>ניהול זמן חכם מתחיל כאן</Typography>
-          </Box>
-          <Box sx={{ p: 4 }}>
-            {/* כאן ה-Login יוצג כשהאינפוטים שלו כבר מעוצבים לפי ה-CSS הגלובלי שהגדרנו */}
-            <Login onLogin={handleLoginSuccess} />
-            {/* <Login onLogin={() => setToken(localStorage.getItem("token"))} /> */}
-            <Typography variant="caption" sx={{ mt: 4, display: 'block', textAlign: 'center', color: 'text.secondary', opacity: 0.5 }}>
-              © 2026 Focus Productivity Suite
-            </Typography>
-          </Box>
-        </Card>
-      </motion.div>
-    </Box>
-  </ThemeProvider>
-);
+              </Avatar>
+              <Typography variant="h4" fontWeight="800">Focus.</Typography>
+              <Typography variant="body2" sx={{ opacity: 0.8 }}>ניהול זמן חכם מתחיל כאן</Typography>
+            </Box>
+            <Box sx={{ p: 4 }}>
+              {/* כאן ה-Login יוצג כשהאינפוטים שלו כבר מעוצבים לפי ה-CSS הגלובלי שהגדרנו */}
+              <Login onLogin={handleLoginSuccess} />
+              {/* <Login onLogin={() => setToken(localStorage.getItem("token"))} /> */}
+              <Typography variant="caption" sx={{ mt: 4, display: 'block', textAlign: 'center', color: 'text.secondary', opacity: 0.5 }}>
+                © 2026 Focus Productivity Suite
+              </Typography>
+            </Box>
+          </Card>
+        </motion.div>
+      </Box>
+    </ThemeProvider>
+  );
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', pb: 10, background: 'linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%)' }}>
-        
+
         {/* Navbar יוקרתי */}
         <Box sx={{ bgcolor: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', position: 'sticky', top: 0, zIndex: 1100, borderBottom: '1px solid #e2e8f0', py: 1.5, mb: 4 }}>
           <Container maxWidth="lg">
@@ -214,7 +218,7 @@ if (!token) return (
         </Box>
 
         <Container maxWidth="md">
-          
+
           {/* Dashboard Stats - עיצוב משודרג לכרטיסיות */}
           {stats && (
             <Grid container spacing={3} mb={5}>
@@ -225,7 +229,7 @@ if (!token) return (
               ].map((s, i) => (
                 <Grid item xs={4} key={i}>
                   <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
-                    <Paper elevation={0} sx={{ 
+                    <Paper elevation={0} sx={{
                       p: 3, borderRadius: 6, border: '1px solid #e2e8f0', textAlign: 'center',
                       background: 'white', position: 'relative', overflow: 'hidden'
                     }}>
@@ -310,17 +314,17 @@ if (!token) return (
               filteredTodos.map((todo) => {
                 const isDone = todo.isComplete ?? todo.IsComplete;
                 const dDate = todo.dueDate ?? todo.DueDate;
-                const isOverdue = dDate && new Date(dDate) < new Date().setHours(0,0,0,0) && !isDone;
+                const isOverdue = dDate && new Date(dDate) < new Date().setHours(0, 0, 0, 0) && !isDone;
 
                 return (
                   <motion.div key={todo.id ?? todo.Id} layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.2 }}>
-                    <Paper sx={{ 
-                      p: 2, mb: 2, borderRadius: 5, border: '1px solid #e2e8f0', 
+                    <Paper sx={{
+                      p: 2, mb: 2, borderRadius: 5, border: '1px solid #e2e8f0',
                       display: 'flex', alignItems: 'center', transition: '0.3s',
                       bgcolor: isOverdue ? '#fff8f8' : 'white',
                       '&:hover': { boxShadow: '0 10px 15px -3px rgba(0,0,0,0.05)', borderColor: '#cbd5e1' }
                     }}>
-                      <Checkbox 
+                      <Checkbox
                         checked={isDone} onChange={(e) => updateCompleted(todo, e.target.checked)}
                         icon={<FiberManualRecord sx={{ color: '#e2e8f0' }} />}
                         checkedIcon={<CheckCircle sx={{ color: '#10b981' }} />}
@@ -329,7 +333,7 @@ if (!token) return (
                         <Stack direction="row" alignItems="center" spacing={1}>
                           {(todo.priority ?? todo.Priority) === 3 && <PriorityHigh sx={{ color: '#ef4444', fontSize: 18 }} />}
                           {(todo.priority ?? todo.Priority) === 2 && <Star sx={{ color: '#f59e0b', fontSize: 18 }} />}
-                          <Typography sx={{ 
+                          <Typography sx={{
                             fontWeight: 600, textDecoration: isDone ? 'line-through' : 'none',
                             color: isDone ? 'text.secondary' : (isOverdue ? '#ef4444' : 'text.primary'),
                           }}>
