@@ -23,7 +23,11 @@ var connectionString = Environment.GetEnvironmentVariable("ToDoDB");
 Console.WriteLine($"!!! DEBUG: Connection string is: '{connectionString}'"); // שורה חדשה
 
 builder.Services.AddDbContext<ToDoDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(
+        connectionString, 
+        ServerVersion.AutoDetect(connectionString)
+    )
+);
 
 builder.Host.UseSerilog();
 
