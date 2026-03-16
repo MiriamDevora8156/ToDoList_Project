@@ -26,32 +26,26 @@ function Login({ onLogin }) {
   //     }
   //   };
   const handleSubmit = async (e) => {
-    e.preventDefault(); // זה עוצר את הריענון הדיפולטי של ה-form
-    e.stopPropagation();
-    
-    const endpoint = isRegister ? "register" : "login";
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, {
-        Username: username,
-        Password: password
-      });
+  e.preventDefault();
+  const endpoint = isRegister ? "register" : "login";
+  try {
+    const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, {
+      Username: username,
+      Password: password
+    });
 
-      // במקום לחכות ל-onLogin שתקרא ל-setToken, 
-      // בואי נשמור את הטוקן ב-localStorage מיד
-      const token = response.data.token || response.data;
-      // בתוך Login.js, בתוך ה-handleSubmit:
-      if (!isRegister && token) {
-        localStorage.setItem("token", token);
-        onLogin(token); // מעבירים את הטוקן לתוך הפונקציה!
-      }
-      // רק אחרי השמירה, נעדכן את ה-App
-      else if (isRegister) {
-      alert("נרשמת בהצלחה! כעת התחבר");
+    // תיקון: חילוץ הטוקן מהשדה הנכון
+    const token = response.data.token; 
+
+    if (!isRegister && token) {
+      localStorage.setItem("token", token); // שומרים את המחרוזת בלבד
+      onLogin(token); 
+    } else if (isRegister) {
+      alert("נרשמת בהצלחה!");
       setIsRegister(false);
     }
   } catch (err) {
-    console.error(err);
-    alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
+    alert("שגיאה בהתחברות");
   }
 };
 

@@ -81,20 +81,20 @@ function App() {
 
   // --- פונקציות פעולה מקוריות ---
   async function createTodo(e) {
-  e.preventDefault();
-  if (!newTodo.trim()) return;
+    e.preventDefault();
+    if (!newTodo.trim()) return;
 
-  // יצירת מיפוי למספרים שהמשתמש בוחר
-  const priorityMapping = { 1: "Low", 2: "Medium", 3: "High" };
+    // יצירת מיפוי למספרים שהמשתמש בוחר
+    // ב-App.js, שנו את המיפוי למספרים:
+    const priorityMapping = { 1: 1, 2: 2, 3: 3 };
 
-  const finalCategory = isAddingNewCategory && newCategoryName.trim() ? newCategoryName : category;
-  const taskToSave = {
-    Name: newTodo, 
-    IsComplete: false, 
-    Priority: priorityMapping[parseInt(priority)], // שולח "Low", "Medium" או "High"
-    CategoryName: finalCategory, 
-    DueDate: dueDate ? new Date(dueDate).toISOString() : null
-  };
+    const taskToSave = {
+      Name: newTodo,
+      IsComplete: false,
+      Priority: priorityMapping[parseInt(priority)], // זה ישלח את המספר 3 (כמספר)
+      CategoryName: finalCategory,
+      DueDate: dueDate ? new Date(dueDate).toISOString() : null
+    };
 
     try {
       await service.addTask(taskToSave);

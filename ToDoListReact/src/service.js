@@ -20,8 +20,10 @@ axios.interceptors.response.use(
   response => response,
   error => {
     if (error.response && error.response.status === 401) {
-      console.log("Token expired or unauthorized - preventing reload for debug");
-      // window.location.reload(); // תעירי את השורה הזו זמנית!
+      localStorage.removeItem("token");
+      // במקום window.location.reload() - תני ל-React לעשות את העבודה
+      // ברגע שהטוקן ב-localStorage ימחק, ה-State ב-App יתעדכן והוא יציג את ה-Login
+      console.log("Unauthorized - token removed");
     }
     return Promise.reject(error);
   }
