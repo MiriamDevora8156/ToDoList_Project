@@ -27,7 +27,8 @@ function Login({ onLogin }) {
   //   };
   const handleSubmit = async (e) => {
     e.preventDefault(); // זה עוצר את הריענון הדיפולטי של ה-form
-
+    e.stopPropagation();
+    
     const endpoint = isRegister ? "register" : "login";
     try {
       const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, {
