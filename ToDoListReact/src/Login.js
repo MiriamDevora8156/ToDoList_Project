@@ -10,7 +10,7 @@ function Login({ onLogin }) {
     e.preventDefault();
 const endpoint = isRegister ? "register" : "login";
     try {
-const response = await axios.post(`http://localhost:5030/${endpoint}`, { 
+const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
     username, 
     password 
 });
