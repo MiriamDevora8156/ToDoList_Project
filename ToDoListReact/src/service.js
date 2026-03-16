@@ -8,7 +8,9 @@ const monitorApiUrl = process.env.REACT_APP_RENDER_MONITOR_URL;
 axios.interceptors.request.use(config => {
   const token = localStorage.getItem("token");
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    // לפעמים הטוקן שמור עם מרכאות, בואי ננקה אותן
+    const cleanToken = token.replace(/['"]+/g, '');
+    config.headers.Authorization = `Bearer ${cleanToken}`;
   }
   return config;
 });
