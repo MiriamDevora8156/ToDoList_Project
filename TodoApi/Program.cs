@@ -18,7 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- 1. הזרקת שירותים (DI) ---
 
-var connectionString = builder.Configuration.GetConnectionString("ToDoDB");
+//var connectionString = builder.Configuration.GetConnectionString("ToDoDB");
+var connectionString = Environment.GetEnvironmentVariable("ToDoDB");
 
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
