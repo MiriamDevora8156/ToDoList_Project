@@ -18,8 +18,8 @@ axios.interceptors.response.use(
   response => response,
   error => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      window.location.reload();
+      console.log("Token expired or unauthorized - preventing reload for debug");
+      // window.location.reload(); // תעירי את השורה הזו זמנית!
     }
     return Promise.reject(error);
   }
@@ -40,7 +40,7 @@ export default {
   setCompleted: async (task) => {
     // חילוץ ה-ID בצורה בטוחה (תומך ב-id וגם ב-Id)
     const taskId = task.id ?? task.Id;
-    
+
     // שליחת האובייקט לכתובת הנכונה
     const result = await axios.put(`${todoApiUrl}/items/${taskId}`, task);
     return result.data;
