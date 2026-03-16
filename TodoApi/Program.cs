@@ -204,9 +204,9 @@ app.MapPost("/login", async (AuthService auth, UserDTO user) =>
 
 app.MapGet("/categories", async (ICategoryService service) => Results.Ok(await service.GetAllAsync()));
 
-app.MapPost("/categories", async (string name, ICategoryService service) =>
+app.MapPost("/categories", async (CategoryDTO category, ICategoryService service) =>
 {
-    await service.AddAsync(name);
+    await service.AddAsync(category.Name); 
     return Results.Created();
 });
 
