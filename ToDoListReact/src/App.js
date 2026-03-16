@@ -73,6 +73,7 @@ function App() {
   }, [token]);
 
   useEffect(() => {
+    console.log("App loaded, current token:", token);
     if (token) {
       loadAppData();
     }
