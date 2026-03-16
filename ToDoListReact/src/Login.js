@@ -6,25 +6,51 @@ function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+// const endpoint = isRegister ? "register" : "login";
+//     try {
+// const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
+//     Username: username, 
+//     Password: password 
+// });
+//       if (!isRegister && response.data.token) {
+//         localStorage.setItem("token", response.data.token); // שמירת הטוקן
+//         onLogin();
+//       } else if (isRegister) {
+//         alert("נרשמת בהצלחה! כעת התחבר");
+//         setIsRegister(false);
+//       }
+//     } catch (err) {
+//       alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
+//     }
+//   };
+const handleSubmit = async (e) => {
     e.preventDefault();
-const endpoint = isRegister ? "register" : "login";
+    const endpoint = isRegister ? "register" : "login";
     try {
-const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
-    Username: username, 
-    Password: password 
-});
-      if (!isRegister && response.data.token) {
-        localStorage.setItem("token", response.data.token); // שמירת הטוקן
-        onLogin();
-      } else if (isRegister) {
-        alert("נרשמת בהצלחה! כעת התחבר");
-        setIsRegister(false);
-      }
+        const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
+            Username: username, 
+            Password: password 
+        });
+
+        console.log("Server response:", response.data); // <--- הוספת לוג!
+
+        // אם השרת מחזיר את הטוקן כמחרוזת ישירה
+        const token = response.data.token || response.data; 
+
+        if (!isRegister && token) {
+            localStorage.setItem("token", token);
+            onLogin();
+        } else if (isRegister) {
+            alert("נרשמת בהצלחה! כעת התחבר");
+            setIsRegister(false);
+        }
     } catch (err) {
-      alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
+        console.error(err);
+        alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
     }
-  };
+};
 
   return (
     <div className="login-container">
