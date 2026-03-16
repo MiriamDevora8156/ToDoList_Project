@@ -46,7 +46,7 @@ function App() {
   const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [todos, setTodos] = useState([]);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(()=>localStorage.getItem("token"));
   const [stats, setStats] = useState(null);
   const [filter, setFilter] = useState("הכל");
   const [categories, setCategories] = useState(["כללי", "עבודה", "לימודים", "בית", "קניות"]);
@@ -160,6 +160,10 @@ const loginTheme = createTheme({
   },
 });
 
+const handleLoginSuccess = (newToken) => {
+      setToken(newToken);
+};
+
 if (!token) return (
   <ThemeProvider theme={loginTheme}>
     <CssBaseline /> {/* חשוב מאוד כדי שה-Global Styles יפעלו */}
@@ -178,7 +182,8 @@ if (!token) return (
           </Box>
           <Box sx={{ p: 4 }}>
             {/* כאן ה-Login יוצג כשהאינפוטים שלו כבר מעוצבים לפי ה-CSS הגלובלי שהגדרנו */}
-            <Login onLogin={() => setToken(localStorage.getItem("token"))} />
+            <Login onLogin={handleLoginSuccess} />
+            {/* <Login onLogin={() => setToken(localStorage.getItem("token"))} /> */}
             <Typography variant="caption" sx={{ mt: 4, display: 'block', textAlign: 'center', color: 'text.secondary', opacity: 0.5 }}>
               © 2026 Focus Productivity Suite
             </Typography>

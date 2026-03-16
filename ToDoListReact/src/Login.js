@@ -6,65 +6,67 @@ function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-// const endpoint = isRegister ? "register" : "login";
-//     try {
-// const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
-//     Username: username, 
-//     Password: password 
-// });
-//       if (!isRegister && response.data.token) {
-//         localStorage.setItem("token", response.data.token); // שמירת הטוקן
-//         onLogin();
-//       } else if (isRegister) {
-//         alert("נרשמת בהצלחה! כעת התחבר");
-//         setIsRegister(false);
-//       }
-//     } catch (err) {
-//       alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
-//     }
-//   };
-const handleSubmit = async (e) => {
-    e.preventDefault();
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault();
+  // const endpoint = isRegister ? "register" : "login";
+  //     try {
+  // const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
+  //     Username: username, 
+  //     Password: password 
+  // });
+  //       if (!isRegister && response.data.token) {
+  //         localStorage.setItem("token", response.data.token); // שמירת הטוקן
+  //         onLogin();
+  //       } else if (isRegister) {
+  //         alert("נרשמת בהצלחה! כעת התחבר");
+  //         setIsRegister(false);
+  //       }
+  //     } catch (err) {
+  //       alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
+  //     }
+  //   };
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // זה עוצר את הריענון הדיפולטי של ה-form
+
     const endpoint = isRegister ? "register" : "login";
     try {
-        const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
-            Username: username, 
-            Password: password 
-        });
+      const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, {
+        Username: username,
+        Password: password
+      });
 
-        console.log("Server response:", response.data); // <--- הוספת לוג!
-
-        // אם השרת מחזיר את הטוקן כמחרוזת ישירה
-        const token = response.data.token || response.data; 
-
-        if (!isRegister && token) {
-            localStorage.setItem("token", token);
-            onLogin();
-        } else if (isRegister) {
-            alert("נרשמת בהצלחה! כעת התחבר");
-            setIsRegister(false);
-        }
-    } catch (err) {
-        console.error(err);
-        alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
+      // במקום לחכות ל-onLogin שתקרא ל-setToken, 
+      // בואי נשמור את הטוקן ב-localStorage מיד
+      const token = response.data.token || response.data;
+      // בתוך Login.js, בתוך ה-handleSubmit:
+      if (!isRegister && token) {
+        localStorage.setItem("token", token);
+        onLogin(token); // מעבירים את הטוקן לתוך הפונקציה!
+      }
+      // רק אחרי השמירה, נעדכן את ה-App
+      else if (isRegister) {
+      alert("נרשמת בהצלחה! כעת התחבר");
+      setIsRegister(false);
     }
+  } catch (err) {
+    console.error(err);
+    alert("שגיאה בפעולה, בדוק שם משתמש וסיסמה");
+  }
 };
 
-  return (
-    <div className="login-container">
-      <h2>{isRegister ? "הרשמה" : "התחברות"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input placeholder="שם משתמש" onChange={e => setUsername(e.target.value)} />
-        <input type="password" placeholder="סיסמה" onChange={e => setPassword(e.target.value)} />
-        <button type="submit">{isRegister ? "הירשם" : "היכנס"}</button>
-      </form>
-      <button onClick={() => setIsRegister(!isRegister)}>
-        {isRegister ? "כבר יש לי חשבון" : "צור חשבון חדש"}
-      </button>
-    </div>
-  );
+return (
+  <div className="login-container">
+    <h2>{isRegister ? "הרשמה" : "התחברות"}</h2>
+    <form onSubmit={handleSubmit}>
+      <input placeholder="שם משתמש" onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="סיסמה" onChange={e => setPassword(e.target.value)} />
+      <button type="submit">{isRegister ? "הירשם" : "היכנס"}</button>
+    </form>
+    <button onClick={() => setIsRegister(!isRegister)}>
+      {isRegister ? "כבר יש לי חשבון" : "צור חשבון חדש"}
+    </button>
+  </div>
+);
 }
 
 export default Login;
