@@ -11,8 +11,8 @@ function Login({ onLogin }) {
 const endpoint = isRegister ? "register" : "login";
     try {
 const response = await axios.post(`${process.env.REACT_APP_TODO_API_URL}/${endpoint}`, { 
-    username, 
-    password 
+    Username: username, 
+    Password: password 
 });
       if (!isRegister && response.data.token) {
         localStorage.setItem("token", response.data.token); // שמירת הטוקן
