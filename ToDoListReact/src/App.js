@@ -84,6 +84,7 @@ function App() {
     e.preventDefault();
     if (!newTodo.trim()) return;
 
+    const finalCategory = isAddingNewCategory && newCategoryName.trim() ? newCategoryName : category;
     // יצירת מיפוי למספרים שהמשתמש בוחר
     // ב-App.js, שנו את המיפוי למספרים:
     const priorityMapping = { 1: 1, 2: 2, 3: 3 };
