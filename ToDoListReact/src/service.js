@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const apiUrl = "https://your-api-service-name.onrender.com";
+const todoApiUrl = process.env.REACT_APP_TODO_API_URL;
+const monitorApiUrl = process.env.REACT_APP_RENDER_MONITOR_URL;
 // const apiUrl = "http://localhost:5030";
 
 // 1. הוספת הטוקן לכל בקשה באופן אוטומטי
@@ -26,13 +27,13 @@ axios.interceptors.response.use(
 
 export default {
   getTasks: async () => {
-    const result = await axios.get(`${apiUrl}/items`);
+    const result = await axios.get(`${todoApiUrl}/items`);
     return result.data;
   },
 
   addTask: async (taskObject) => {
     // taskObject כבר מכיל PascalCase (Name, Priority וכו') מה-App.js
-    const result = await axios.post(`${apiUrl}/items`, taskObject);
+    const result = await axios.post(`${todoApiUrl}/items`, taskObject);
     return result.data;
   },
 
@@ -41,16 +42,22 @@ export default {
     const taskId = task.id ?? task.Id;
     
     // שליחת האובייקט לכתובת הנכונה
-    const result = await axios.put(`${apiUrl}/items/${taskId}`, task);
+    const result = await axios.put(`${todoApiUrl}/items/${taskId}`, task);
     return result.data;
   },
 
   deleteTask: async (id) => {
-    await axios.delete(`${apiUrl}/items/${id}`);
+    await axios.delete(`${todoApiUrl}/items/${id}`);
   },
 
   getStats: async () => {
-    const result = await axios.get(`${apiUrl}/items/stats`);
+    const result = await axios.get(`${todoApiUrl}/items/stats`);
+    return result.data;
+  },
+
+  // --- פונקציה חדשה (פונה לכתובת של ה-Node החדש) ---
+  getRenderServices: async () => {
+    const result = await axios.get(`${monitorApiUrl}/services`);
     return result.data;
   }
 };

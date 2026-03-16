@@ -91,30 +91,50 @@ builder.Services.AddCors(options =>
 // --- 2. Middleware Pipeline ---
 var app = builder.Build();
 
+// app.UseExceptionHandler(exceptionHandlerApp =>
+// {
+//     exceptionHandlerApp.Run(async context =>
+//     {
+//         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+//         context.Response.ContentType = "application/json";
+
+//         var response = new
+//         {
+//             error = "Internal Server Error",
+//             message = "חלה שגיאה פנימית בשרת. אנא נסה שוב מאוחר יותר."
+//         };
+
+//         await context.Response.WriteAsJsonAsync(response);
+//     });
+// });
 app.UseExceptionHandler(exceptionHandlerApp =>
 {
     exceptionHandlerApp.Run(async context =>
     {
+        var exceptionHandlerPathFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        var exception = exceptionHandlerPathFeature?.Error;
+
+        // שורת המפתח: כתיבת השגיאה ל-Console של Render
+        Console.WriteLine($"!!! ERROR: {exception?.Message}");
+        Console.WriteLine($"!!! STACK TRACE: {exception?.StackTrace}");
+
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
-
-        var response = new
-        {
-            error = "Internal Server Error",
-            message = "חלה שגיאה פנימית בשרת. אנא נסה שוב מאוחר יותר."
-        };
-
-        await context.Response.WriteAsJsonAsync(response);
+        // נחזיר את ההודעה מהשרת כדי שנוכל לראות אותה בדפדפן זמנית
+        await context.Response.WriteAsJsonAsync(new { message = exception?.Message });
     });
 });
 
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+// if (app.Environment.IsDevelopment())
+// {
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
-app.UseCors("AllowAll"); // הפעלת המדיניות שהגדרנו למעלה
+app.UseCors("AllowAll"); 
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
 
 app.Use(async (context, next) =>
 {
@@ -183,15 +203,15 @@ app.MapPost("/login", async (AuthService auth, UserDTO user) =>
 });
 
 app.MapGet("/categories", async (ICategoryService service) => Results.Ok(await service.GetAllAsync()));
+
 app.MapPost("/categories", async (string name, ICategoryService service) =>
 {
     await service.AddAsync(name);
     return Results.Created();
 });
 
-app.MapGet("/", ()=> "Server API id running!");
+app.MapGet("/", () => "Server API id running!");
 
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
+var port = Environment.GetEnvironmentVariable("ASPNETCORE_HTTP_PORTS") ?? "8080";
+app.Urls.Add($"http://+:{port}");
 app.Run();
