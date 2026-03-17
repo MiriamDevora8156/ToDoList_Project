@@ -88,7 +88,7 @@ function App() {
 
     // מיפוי הערכים למספרים (Enum)
     // 1 (Low) -> 0, 2 (Medium) -> 1, 3 (High) -> 2
-    const priorityMap = { "1": 0, "2": 1, "3": 2 };
+    const priorityMap = { 1: 0, 2: 1, 3: 2 };
 
     const taskToSave = {
       Name: newTodo,
@@ -273,9 +273,9 @@ function App() {
                     <FormControl fullWidth size="small">
                       <InputLabel>Priority</InputLabel>
                       <Select value={priority} label="Priority" onChange={(e) => setPriority(e.target.value)} sx={{ borderRadius: 3 }}>
-                        <MenuItem value={0}>⚪ Low</MenuItem>
-                        <MenuItem value={1}>🟡 Medium</MenuItem>
-                        <MenuItem value={2}>🔴 Urgent</MenuItem>
+                        <MenuItem value={1}>⚪ Low</MenuItem>
+                        <MenuItem value={2}>🟡 Medium</MenuItem>
+                        <MenuItem value={3}>🔴 Urgent</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
