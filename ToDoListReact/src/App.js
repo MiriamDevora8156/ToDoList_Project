@@ -235,9 +235,9 @@ function App() {
           {stats && (
             <Grid container spacing={3} mb={5}>
               {[
-                { label: 'Total Tasks', val: stats.totalTasks ?? stats.TotalTasks, color: '#6366f1', icon: <TrendingUp /> },
-                { label: 'Completed', val: stats.completedTasks ?? stats.CompletedTasks, color: '#10b981', icon: <DoneAll /> },
-                { label: 'Urgent', val: stats.highPriorityTasks ?? stats.HighPriorityTasks, color: '#ef4444', icon: <ReportProblem /> }
+                { label: 'Total Tasks', val: stats?.totalTasks || stats?.TotalTasks || 0, color: '#6366f1', icon: <TrendingUp /> },
+                { label: 'Completed', val: stats?.completedTasks || stats?.CompletedTasks || 0, color: '#10b981', icon: <DoneAll /> },
+                { label: 'Urgent', val: stats?.highPriorityTasks || stats?.HighPriorityTasks || 0, color: '#ef4444', icon: <ReportProblem /> }
               ].map((s, i) => (
                 <Grid item xs={4} key={i}>
                   <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
