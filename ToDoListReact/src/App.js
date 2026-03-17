@@ -80,7 +80,7 @@ function App() {
   }, [token, loadAppData]);
 
   // --- פונקציות פעולה מקוריות ---
-  const addTodo = async (e) => {
+  const createTodo = async (e) => {
     if (e) e.preventDefault();
     if (!newTodo.trim()) return;
 
