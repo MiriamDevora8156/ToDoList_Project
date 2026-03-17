@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using TodoApi.Project.Data;
 using Microsoft.EntityFrameworkCore;
-using BCrypt.Net; 
+using BCrypt.Net;
 
 namespace TodoApi.Project.Services;
 
@@ -23,10 +23,11 @@ public class AuthService
     {
         // יצירת סיסמה מוצפנת (Hash)
         string securePassword = BCrypt.Net.BCrypt.HashPassword(password);
-        
-        _context.Users.Add(new User { 
-            Username = username, 
-            PasswordHash = securePassword 
+
+        _context.Users.Add(new User
+        {
+            Username = username,
+            PasswordHash = securePassword
         });
         await _context.SaveChangesAsync();
     }
@@ -34,7 +35,7 @@ public class AuthService
     public async Task<string?> LoginAsync(string username, string password)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-        
+
         // בדיקה: האם המשתמש קיים והאם הסיסמה שהזין מתאימה ל-Hash השמור
         if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
         {
@@ -55,8 +56,12 @@ public class AuthService
             new Claim(ClaimTypes.Name, user.Username)
         };
 
-        var token = new JwtSecurityToken("TodoApi", "TodoApiUsers", claims,
-            expires: DateTime.Now.AddDays(1), signingCredentials: credentials);
+        var token = new JwtSecurityToken(
+    issuer: "TodoApi",           // חייב להתאים ל-Program.cs
+    audience: "TodoApiUsers",    // חייב להתאים ל-Program.cs
+    claims: claims,
+    expires: DateTime.Now.AddDays(1),
+    signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

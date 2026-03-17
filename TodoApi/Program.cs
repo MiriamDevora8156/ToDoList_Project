@@ -178,7 +178,7 @@ app.MapPost("/items", async (ITodoService service, TodoItemDTO item) =>
 {
     await service.AddAsync(item);
     return Results.Created($"/items/{item.Id}", item);
-});
+}).RequireAuthorization();
 
 // עדכון משימה
 app.MapPut("/items/{id}", async (int id, TodoItemDTO itemDto, ITodoService todoService) =>
@@ -214,7 +214,7 @@ app.MapPost("/categories", async (CategoryDTO category, ICategoryService service
 {
     await service.AddAsync(category.Name); 
     return Results.Created();
-});
+}).RequireAuthorization();
 
 app.MapGet("/", () => "Server API id running!");
 

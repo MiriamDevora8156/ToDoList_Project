@@ -87,15 +87,15 @@ function App() {
   const finalCategory = isAddingNewCategory && newCategoryName.trim() ? newCategoryName : category;
   
   // מיפוי שמות ה-Enum בדיוק כפי שהם מופיעים ב-C# (Low, Medium, High)
-  const priorityMapping = { 1: "Low", 2: "Medium", 3: "High" };
+  const priorityMapping = { 1: 0, 2: 1, 3: 2 }; 
 
-  const taskToSave = {
-    Name: newTodo,
-    IsComplete: false,
-    Priority: priorityMapping[priority], // שולח מחרוזת במקום מספר
-    CategoryName: finalCategory,
-    DueDate: dueDate ? new Date(dueDate).toISOString() : null
-  };
+const taskToSave = {
+  Name: newTodo,
+  IsComplete: false,
+  Priority: priorityMapping[priority], // ישלח 0, 1, או 2
+  CategoryName: finalCategory,
+  DueDate: dueDate ? new Date(dueDate).toISOString() : null
+};
 
   try {
     await service.addTask(taskToSave);
