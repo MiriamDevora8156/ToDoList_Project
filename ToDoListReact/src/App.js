@@ -46,7 +46,7 @@ function App() {
   const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [todos, setTodos] = useState([]);
-  const [token, setToken] = useState(() => localStorage.getItem("token")) || null;
+  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
   const [stats, setStats] = useState(null);
   const [filter, setFilter] = useState("הכל");
   const [categories, setCategories] = useState(["כללי", "עבודה", "לימודים", "בית", "קניות"]);
