@@ -6,9 +6,9 @@ const monitorApiUrl = process.env.REACT_APP_RENDER_MONITOR_URL;
 
 // 1. הוספת הטוקן לכל בקשה באופן אוטומטי
 axios.interceptors.request.use(config => {
-  const token = localStorage.getItem("token");
+  let token = localStorage.getItem("token");
   if (token) {
-    // לפעמים הטוקן שמור עם מרכאות, בואי ננקה אותן
+    // ניקוי מרכאות כפולות שנוצרות לעיתים בשמירה
     const cleanToken = token.replace(/['"]+/g, '');
     config.headers.Authorization = `Bearer ${cleanToken}`;
   }

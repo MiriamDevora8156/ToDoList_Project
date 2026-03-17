@@ -81,29 +81,31 @@ function App() {
 
   // --- פונקציות פעולה מקוריות ---
   async function createTodo(e) {
-    e.preventDefault();
-    if (!newTodo.trim()) return;
+  e.preventDefault();
+  if (!newTodo.trim()) return;
 
-    const finalCategory = isAddingNewCategory && newCategoryName.trim() ? newCategoryName : category;
-    // יצירת מיפוי למספרים שהמשתמש בוחר
-    // ב-App.js, שנו את המיפוי למספרים:
-    const priorityMapping = { 1: 1, 2: 2, 3: 3 };
+  const finalCategory = isAddingNewCategory && newCategoryName.trim() ? newCategoryName : category;
+  
+  // מיפוי שמות ה-Enum בדיוק כפי שהם מופיעים ב-C# (Low, Medium, High)
+  const priorityMapping = { 1: "Low", 2: "Medium", 3: "High" };
 
-    const taskToSave = {
-      Name: newTodo,
-      IsComplete: false,
-      Priority: priorityMapping[parseInt(priority)], // זה ישלח את המספר 3 (כמספר)
-      CategoryName: finalCategory,
-      DueDate: dueDate ? new Date(dueDate).toISOString() : null
-    };
+  const taskToSave = {
+    Name: newTodo,
+    IsComplete: false,
+    Priority: priorityMapping[priority], // שולח מחרוזת במקום מספר
+    CategoryName: finalCategory,
+    DueDate: dueDate ? new Date(dueDate).toISOString() : null
+  };
 
-    try {
-      await service.addTask(taskToSave);
+  try {
+    await service.addTask(taskToSave);
       setNewTodo(""); setDueDate(""); setPriority(1);
       setIsAddingNewCategory(false); setNewCategoryName("");
       await loadAppData();
-    } catch (err) { console.error(err); }
+  } catch (err) { 
+    console.error("Save failed:", err.response?.data || err.message); 
   }
+}
 
   async function updateCompleted(todo, isComplete) {
     const updatedTask = { ...todo, id: todo.id ?? todo.Id, isComplete, IsComplete: isComplete };
