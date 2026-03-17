@@ -47,7 +47,7 @@ public class AuthService
 
     private string GenerateToken(User user)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourVeryLongSecretKeyHere123456!"));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT_SECRET_KEY"] ?? "FallbackKeyForLocalDevelopment123456!"));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
