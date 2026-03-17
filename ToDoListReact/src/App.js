@@ -84,6 +84,8 @@ function App() {
     if (e) e.preventDefault();
     if (!newTodo.trim()) return;
 
+    const finalCategory = isAddingNewCategory && newCategoryName.trim() ? newCategoryName : category;
+
     // מיפוי הערכים למספרים (Enum)
     // 1 (Low) -> 0, 2 (Medium) -> 1, 3 (High) -> 2
     const priorityMap = { "1": 0, "2": 1, "3": 2 };
@@ -95,7 +97,6 @@ function App() {
       CategoryName: finalCategory,
       DueDate: dueDate ? new Date(dueDate).toISOString() : null
     };
-
     try {
       await service.addTask(taskToSave);
       setNewTodo(""); setDueDate(""); setPriority(1);
