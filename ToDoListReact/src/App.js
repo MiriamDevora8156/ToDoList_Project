@@ -86,14 +86,10 @@ function App() {
 
     const finalCategory = isAddingNewCategory && newCategoryName.trim() ? newCategoryName : category;
 
-    // מיפוי הערכים למספרים (Enum)
-    // 1 (Low) -> 0, 2 (Medium) -> 1, 3 (High) -> 2
-    //const priorityMap = { 1: 0, 2: 1, 3: 2 };
-
     const taskToSave = {
       Name: newTodo,
       IsComplete: false,
-      Priority: priority, // שולח מספר!
+      Priority: priority, 
       CategoryName: finalCategory,
       DueDate: dueDate ? new Date(dueDate).toISOString() : null
     };
